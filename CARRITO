@@ -1,0 +1,19 @@
+CREATE TABLE carrito (
+    id_carrito INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT UNIQUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    estado VARCHAR (50),
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+    );
+    
+    CREATE TABLE item_carrito (
+        id_item_carrito INT AUTO_INCREMENT PRIMARY KEY,
+        carrito_id INT,
+        producto_id INT,
+        cantidad INT NOT NULL,
+        subtototal DECIMAL(12,2) NOT NULL,
+        CONSTRAINT fk_carrito FOREIGN KEY (carrito_id),
+        REFERENCES carrito(id_carrito) ON DELETE CASCADE,
+        CONSTRAINT fk_producto FOREIGN KEY (producto_id) 
+        REFERENCES producto(id)
+        );
