@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-02-2026 a las 09:41:04
+-- Tiempo de generación: 24-02-2026 a las 09:49:06
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -116,6 +116,20 @@ CREATE TABLE `metodo_de_pago` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `movimiento_stock`
+--
+
+CREATE TABLE `movimiento_stock` (
+  `id_movimiento_stock` int(11) NOT NULL,
+  `id_ingrediente` int(11) DEFAULT NULL,
+  `tipo` varchar(20) DEFAULT NULL,
+  `cantidad` decimal(10,2) DEFAULT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `pago`
 --
 
@@ -145,6 +159,20 @@ CREATE TABLE `pedido` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `produccion`
+--
+
+CREATE TABLE `produccion` (
+  `id_produccion` int(11) NOT NULL,
+  `id_pedido` int(11) DEFAULT NULL,
+  `fecha_inicio` timestamp NOT NULL DEFAULT current_timestamp(),
+  `fecha_fin` timestamp NULL DEFAULT NULL,
+  `estado` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `producto`
 --
 
@@ -157,6 +185,18 @@ CREATE TABLE `producto` (
   `imagen` text DEFAULT NULL,
   `estado` tinyint(1) DEFAULT 1,
   `id_categoriaFK` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `producto_ingrediente`
+--
+
+CREATE TABLE `producto_ingrediente` (
+  `id_producto` int(11) NOT NULL,
+  `id_ingrediente` int(11) NOT NULL,
+  `cantidad_necesaria` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -304,6 +344,13 @@ ALTER TABLE `metodo_de_pago`
   ADD PRIMARY KEY (`id_metodo_de_pago`);
 
 --
+-- Indices de la tabla `movimiento_stock`
+--
+ALTER TABLE `movimiento_stock`
+  ADD PRIMARY KEY (`id_movimiento_stock`),
+  ADD KEY `id_ingrediente` (`id_ingrediente`);
+
+--
 -- Indices de la tabla `pago`
 --
 ALTER TABLE `pago`
@@ -319,11 +366,25 @@ ALTER TABLE `pedido`
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
+-- Indices de la tabla `produccion`
+--
+ALTER TABLE `produccion`
+  ADD PRIMARY KEY (`id_produccion`),
+  ADD UNIQUE KEY `id_pedido` (`id_pedido`);
+
+--
 -- Indices de la tabla `producto`
 --
 ALTER TABLE `producto`
   ADD PRIMARY KEY (`id_producto`),
   ADD KEY `id_categoriaFK` (`id_categoriaFK`);
+
+--
+-- Indices de la tabla `producto_ingrediente`
+--
+ALTER TABLE `producto_ingrediente`
+  ADD PRIMARY KEY (`id_producto`,`id_ingrediente`),
+  ADD KEY `id_ingrediente` (`id_ingrediente`);
 
 --
 -- Indices de la tabla `producto_promocion`
@@ -422,6 +483,12 @@ ALTER TABLE `item_carrito`
   ADD CONSTRAINT `fk_producto` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`);
 
 --
+-- Filtros para la tabla `movimiento_stock`
+--
+ALTER TABLE `movimiento_stock`
+  ADD CONSTRAINT `movimiento_stock_ibfk_1` FOREIGN KEY (`id_ingrediente`) REFERENCES `ingrediente` (`id_ingrediente`);
+
+--
 -- Filtros para la tabla `pago`
 --
 ALTER TABLE `pago`
@@ -435,10 +502,23 @@ ALTER TABLE `pedido`
   ADD CONSTRAINT `pedido_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
 
 --
+-- Filtros para la tabla `produccion`
+--
+ALTER TABLE `produccion`
+  ADD CONSTRAINT `produccion_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedido` (`id_pedido`);
+
+--
 -- Filtros para la tabla `producto`
 --
 ALTER TABLE `producto`
   ADD CONSTRAINT `producto_ibfk_1` FOREIGN KEY (`id_categoriaFK`) REFERENCES `categoria` (`id_categoria`);
+
+--
+-- Filtros para la tabla `producto_ingrediente`
+--
+ALTER TABLE `producto_ingrediente`
+  ADD CONSTRAINT `producto_ingrediente_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`),
+  ADD CONSTRAINT `producto_ingrediente_ibfk_2` FOREIGN KEY (`id_ingrediente`) REFERENCES `ingrediente` (`id_ingrediente`);
 
 --
 -- Filtros para la tabla `producto_promocion`
