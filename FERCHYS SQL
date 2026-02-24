@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-02-2026 a las 09:31:12
+-- Tiempo de generación: 24-02-2026 a las 09:41:04
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -58,6 +58,34 @@ CREATE TABLE `detalle_pedido` (
   `cantidad` int(11) NOT NULL,
   `precio_unitario` decimal(12,2) NOT NULL,
   `subtotal` decimal(12,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `entrega`
+--
+
+CREATE TABLE `entrega` (
+  `id_entrega` int(11) NOT NULL,
+  `id_pedido` int(11) DEFAULT NULL,
+  `id_repartidor` int(11) DEFAULT NULL,
+  `id_zona_reparto` int(11) DEFAULT NULL,
+  `fecha_entrega` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `estado` varchar(50) DEFAULT NULL,
+  `direccion` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ingrediente`
+--
+
+CREATE TABLE `ingrediente` (
+  `id_ingrediente` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `cantidad_disponible` decimal(10,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -216,7 +244,7 @@ CREATE TABLE `usuario` (
 --
 
 CREATE TABLE `zona_reparto` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id_zona_reparto` int(11) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
   `cobertura` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -245,6 +273,21 @@ ALTER TABLE `detalle_pedido`
   ADD PRIMARY KEY (`detalle_pedido_id`),
   ADD KEY `id_pedido` (`id_pedido`),
   ADD KEY `id_producto` (`id_producto`);
+
+--
+-- Indices de la tabla `entrega`
+--
+ALTER TABLE `entrega`
+  ADD PRIMARY KEY (`id_entrega`),
+  ADD UNIQUE KEY `id_pedido` (`id_pedido`),
+  ADD KEY `id_repartidor` (`id_repartidor`),
+  ADD KEY `id_zona_reparto` (`id_zona_reparto`);
+
+--
+-- Indices de la tabla `ingrediente`
+--
+ALTER TABLE `ingrediente`
+  ADD PRIMARY KEY (`id_ingrediente`);
 
 --
 -- Indices de la tabla `item_carrito`
@@ -328,7 +371,7 @@ ALTER TABLE `usuario`
 -- Indices de la tabla `zona_reparto`
 --
 ALTER TABLE `zona_reparto`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id_zona_reparto`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -347,12 +390,6 @@ ALTER TABLE `item_carrito`
   MODIFY `id_item_carrito` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `zona_reparto`
---
-ALTER TABLE `zona_reparto`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- Restricciones para tablas volcadas
 --
 
@@ -368,6 +405,14 @@ ALTER TABLE `carrito`
 ALTER TABLE `detalle_pedido`
   ADD CONSTRAINT `detalle_pedido_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedido` (`id_pedido`),
   ADD CONSTRAINT `detalle_pedido_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `producto` (`id_producto`);
+
+--
+-- Filtros para la tabla `entrega`
+--
+ALTER TABLE `entrega`
+  ADD CONSTRAINT `entrega_ibfk_1` FOREIGN KEY (`id_pedido`) REFERENCES `pedido` (`id_pedido`),
+  ADD CONSTRAINT `entrega_ibfk_2` FOREIGN KEY (`id_repartidor`) REFERENCES `usuario` (`id_usuario`),
+  ADD CONSTRAINT `entrega_ibfk_3` FOREIGN KEY (`id_zona_reparto`) REFERENCES `zona_reparto` (`id_zona_reparto`);
 
 --
 -- Filtros para la tabla `item_carrito`
