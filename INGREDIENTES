@@ -1,0 +1,32 @@
+CREATE TABLE ingrediente (
+    id_ingrediente INT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    cantidad_disponible DECIMAL(10,2) DEFAULT 0
+);
+
+CREATE TABLE producto_ingrediente (
+    id_producto INT,
+    id_ingrediente INT,
+    cantidad_necesaria DECIMAL(10,2),
+    PRIMARY KEY (id_producto, id_ingrediente),
+    FOREIGN KEY (id_producto) REFERENCES producto(id),
+    FOREIGN KEY (id_ingrediente) REFERENCES ingrediente(id)
+);
+
+CREATE TABLE movimiento_stock (
+    id_movimiento_stock INT PRIMARY KEY,
+    id_ingrediente INT,
+    tipo VARCHAR(20), -- ingreso / egreso
+    cantidad DECIMAL(10,2),
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_ingrediente) REFERENCES ingrediente(id)
+);
+
+CREATE TABLE produccion (
+    id_produccion INT PRIMARY KEY,
+    id_pedido INT UNIQUE,
+    fecha_inicio TIMESTAMP,
+    fecha_fin TIMESTAMP,
+    estado VARCHAR(50),
+    FOREIGN KEY (id_pedido) REFERENCES pedido(id)
+);
