@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS zona_reparto (
+    id_zona_reparto INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    cobertura TEXT
+);
+
+CREATE TABLE IF NOT EXISTS entrega (
+    id_entrega INT PRIMARY KEY,
+    id_pedido INT UNIQUE,
+    id_repartidor INT ,
+    id_zona_reparto INT,
+    fecha_entrega TIMESTAMP,
+    estado VARCHAR(50),
+    direccion TEXT,
+    FOREIGN KEY (id_pedido) REFERENCES pedido(id_pedido),
+    FOREIGN KEY (id_repartidor) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_zona_reparto) REFERENCES zona_reparto(id_zona_reparto)
+);
