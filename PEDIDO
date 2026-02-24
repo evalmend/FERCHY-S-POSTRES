@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS pedido(
+    id_pedido INT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    estado VARCHAR(50),
+    total DECIMAL(12,2),
+    FOREIGN KEY(id_usuario)REFERENCES usuario(id)
+    );
+    
+    CREATE TABLE IF NOT EXISTS detalle_pedido(
+        detalle_pedido_id INT PRIMARY KEY,
+        id_pedido INT,
+        id_producto INT,
+        cantidad INT NOT NULL,
+        precio_unitario DECIMAL(12,2)NOT NULL,
+        subtotal DECIMAL(12,2)NOT NULL,
+        FOREIGN KEY (id_pedido) REFERENCES pedido(id),
+        FOREIGN KEY (id_producto) REFERENCES producto(id)
+        );
