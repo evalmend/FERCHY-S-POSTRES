@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS metodo_de_pago (
+    id_metodo_de_pago INT PRIMARY KEY,
+    tipo VARCHAR(50) NOT NULL
+ );
+ 
+ CREATE TABLE IF NOT EXISTS pago (
+     id_pago INT PRIMARY KEY,
+     id_pedido INT UNIQUE,
+     id_metodo_de_pago INT,
+     monto DECIMAL(12,2),
+     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     estado VARCHAR(50),
+     FOREIGN KEY(id_pedido) REFERENCES pedido(id_pedido),
+     FOREIGN KEY (id_metodo_de_pago) REFERENCES metodo_de_pago(id_metodo_de_pago)
+     );
+     
+ 
+CREATE TABLE IF NOT EXISTS tarjeta (
+	id_tarjeta INT PRIMARY KEY,
+    id_pago INT UNIQUE,
+    numero_tarjeta VARCHAR(5),
+    cvv VARCHAR(5),
+    FOREIGN KEY (id_pago) REFERENCES pago(id_pago)
+    );
+   
+CREATE TABLE IF NOT EXISTS pse (
+    id_pse INT PRIMARY KEY,
+    id_pago INT UNIQUE,
+    banco VARCHAR(50),
+    numero_cuenta VARCHAR(50),
+    FOREIGN KEY (id_pago) REFERENCES pago(id_pago)
+    );
