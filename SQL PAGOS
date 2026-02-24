@@ -30,3 +30,13 @@ CREATE TABLE IF NOT EXISTS pse (
     numero_cuenta VARCHAR(50),
     FOREIGN KEY (id_pago) REFERENCES pago(id_pago)
     );
+
+=========================================================================================================================================================
+CREATE TABLE reporte_ventas (
+    id_reporte INT PRIMARY KEY,
+    id_administrador INT,
+    fecha_inicio DATE,
+    fecha_fin DATE,
+    total_ventas DECIMAL(14,2),
+    FOREIGN KEY (administrador_id) REFERENCES usuario(id)
+);
